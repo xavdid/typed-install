@@ -1,11 +1,12 @@
+#!/usr/bin/env node
+
 import program = require('commander')
 import main, { MainOpts } from './index'
 const pj = require('../package.json')
 
 program
-  // .usage('typedi PACKAGE...')
   .version(pj.version)
-  // .option('-N, --no-save', '')
+  .usage('[options] <modules ...>')
   .option('-d, --dev', 'save everything into the dev dependencies')
   .option('-p, --prod', 'save the @types into `dependencies`')
   .option('-y, --yarn', 'install using yarn instead of npm')
