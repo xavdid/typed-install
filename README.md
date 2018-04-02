@@ -1,5 +1,9 @@
 # typed-install
 
+
+[![npm](https://img.shields.io/npm/v/typed-install.svg?style=flat-square)](https://www.npmjs.com/package/typed-install)
+
+
 You're writing Typescript and it's time to install your favorite node module. Has this ever happened to you?
 
 ```
