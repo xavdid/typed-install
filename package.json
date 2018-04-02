@@ -1,0 +1,63 @@
+{
+  "name": "typed-install",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "typedi": "./lib/cli.js"
+  },
+  "dependencies": {
+    "commander": "2.12.2",
+    "got": "8.0.0",
+    "lodash": "4.17.4",
+    "mz": "2.7.0",
+    "ora": "2.0.0",
+    "shelljs": "0.7.8"
+  },
+  "devDependencies": {
+    "@types/commander": "^2.12.2",
+    "@types/got": "^7.1.5",
+    "@types/jest": "^22.2.2",
+    "@types/lodash": "^4.14.106",
+    "@types/mock-fs": "^3.6.30",
+    "@types/mz": "0.0.32",
+    "@types/shelljs": "0.7.6",
+    "jest": "^22.4.3",
+    "mock-fs": "^4.4.2",
+    "ts-jest": "^22.4.2",
+    "tslint": "^5.9.1",
+    "tslint-config-prettier": "^1.6.0",
+    "typescript": "2.7.2"
+  },
+  "scripts": {
+    "test": "jest",
+    "lint": "tslint -p tsconfig.json -c tslint.json",
+    "release": "npx np"
+  },
+  "keywords": [
+    "typescript",
+    "npm",
+    "installing"
+  ],
+  "author": "David Brownman <beamneocube@gmail.com> (https://davidbrownman.com)",
+  "license": "ISC",
+  "prettier": {
+    "semi": false,
+    "singleQuote": true
+  },
+  "jest": {
+    "silent": true,
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
+  }
+}

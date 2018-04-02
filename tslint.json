@@ -1,0 +1,15 @@
+{
+  "extends": [
+    "tslint:recommended",
+    "tslint-config-prettier" // this has to go last
+  ],
+  "rules": {
+    // tweak linting here
+    "no-console": false,
+    "interface-name": false,
+    "object-literal-sort-keys": false,
+    "no-var-requires": false,
+    "no-empty": false,
+    "ordered-imports": false
+  }
+}
