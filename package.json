@@ -1,10 +1,10 @@
 {
   "name": "typed-install",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "lib/index.js",
   "bin": {
-    "typedi": "./lib/cli.js"
+    "typedi": "lib/cli.js"
   },
   "dependencies": {
     "commander": "2.12.2",
@@ -14,8 +14,8 @@
     "ora": "2.0.0",
     "shelljs": "0.7.8"
   },
+  "repository": "xavdid/typed-install",
   "devDependencies": {
-    "@types/commander": "^2.12.2",
     "@types/got": "^7.1.5",
     "@types/jest": "^22.2.2",
     "@types/lodash": "^4.14.106",
@@ -32,6 +32,8 @@
   "scripts": {
     "test": "jest",
     "lint": "tslint -p tsconfig.json -c tslint.json",
+    "preversion": "npm run build",
+    "build": "tsc",
     "release": "npx np"
   },
   "keywords": [

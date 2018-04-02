@@ -43,4 +43,31 @@ By default, `typedi` uses npm, saves packages into `dependencies`, and `@types` 
 * **-p** | **--prod**: save the @types into `dependencies`
 * **-y** | **--yarn**: install using yarn instead of npm
 
-<!-- [snippet:options] -->
+## API
+
+The code that powers `typedi` can also be used via the Node.js API.
+
+The main function takes the following options, in order:
+
+### modules (string[])
+
+An array of npm module names
+
+### opts (object)
+
+an object with any of the following keys (see above):
+
+* dev
+* prod
+* yarn
+
+### shouldSpin (boolean)
+
+Whether or not to run the fancy spinner. If you're using this in other code, this should probably be false.
+
+```js
+const typedi = require('typed-install').default
+typedi(['lodash', 'striptags'], { dev: true }, false).then(() => {
+  console.log('all done!')
+})
+```
