@@ -50,7 +50,7 @@
     "singleQuote": true
   },
   "jest": {
-
+    "silent": true,
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     },
