@@ -2,6 +2,7 @@ import * as sh from 'shelljs'
 import * as got from 'got'
 import * as fs from 'mz/fs'
 import { resolve } from 'path'
+import * as pkgDir from 'pkg-dir'
 
 const REGISTRY_URL = 'https://registry.npmjs.org'
 
@@ -53,7 +54,8 @@ export const getTypingInfo = async (name: string) => {
 
 // returns null for functions that have type info and the module name if they're missing
 export const missingTypes = async (m: string) => {
-  const installDir = resolve(`./node_modules/${m}`)
+  const pkgRoot = await pkgDir()
+  const installDir = resolve(`${pkgRoot || '.'}/node_modules/${m}`)
   try {
     const pkg = require(`${installDir}/package.json`)
 
