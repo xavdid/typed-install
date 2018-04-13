@@ -15,7 +15,7 @@ npm ERR! A complete log of this run can be found in:
 npm ERR!     /Users/user/.npm/_logs/2018-03-31T23_41_37_683Z-debug.log
 ```
 
-It's hard to know is the types are included with the module, shipped separately, or non-existent. Enter `typed-install`.
+It's hard to know if type declarations are included with the module, shipped separately, or non-existent. Enter `typed-install`.
 
 ## Installation and Usage
 
