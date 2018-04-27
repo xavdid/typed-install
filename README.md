@@ -47,6 +47,18 @@ By default, `typedi` uses npm, saves packages into `dependencies`, and `@types` 
 * **-p** | **--prod**: save the @types into `dependencies`
 * **-y** | **--yarn**: install using yarn instead of npm
 
+### npx
+
+If you are using the latest version of npm, it ships with npx to easily run CLIs.
+
+You can avoid installing `typed-install` globally by using npx to invoke a one time use.
+
+The above example can be performed in one line:
+
+```
+% npx typed-install heroku-config lodash striptags
+```
+
 ## API
 
 The code that powers `typedi` can also be used via the Node.js API.
