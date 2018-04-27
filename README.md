@@ -49,7 +49,7 @@ By default, `typedi` uses npm, saves packages into `dependencies`, and `@types` 
 
 ### npx
 
-If you have `npm@5.2.0` or greater installed, you can run this via `npx` ([more info](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b), a tool to run CLI packages without explicitly installing them. This is great for periodic or one time use. 
+If you have `npm@5.2.0` or greater installed, you can run this via `npx` ([more info](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b)), a tool to run CLI packages without explicitly installing them. This is great for periodic or one time use. 
 
 The previous example becomes:
 
@@ -77,13 +77,14 @@ an object with any of the following keys (see above):
 * prod
 * yarn
 
-### shouldSpin (boolean)
+### shouldSpin (boolean, default `false`)
 
-Whether or not to run the fancy spinner. If you're using this in other code, this should probably be false.
+Whether or not to run the fancy spinner. If you're using this in other code, this should probably be false. 
 
 ```js
 const typedi = require('typed-install').default
-typedi(['lodash', 'striptags'], { dev: true }, false).then(() => {
+
+typedi(['lodash', 'striptags'], { dev: true }).then(() => {
   console.log('all done!')
 })
 ```
