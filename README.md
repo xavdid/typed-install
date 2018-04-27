@@ -49,15 +49,15 @@ By default, `typedi` uses npm, saves packages into `dependencies`, and `@types` 
 
 ### npx
 
-If you are using the latest version of npm, it ships with npx to easily run CLIs.
+If you have `npm@5.2.0` or greater installed, you can run this via `npx` ([more info](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b), a tool to run CLI packages without explicitly installing them. This is great for periodic or one time use. 
 
-You can avoid installing `typed-install` globally by using npx to invoke a one time use.
-
-The above example can be performed in one line:
+The previous example becomes:
 
 ```
 % npx typed-install heroku-config lodash striptags
 ```
+
+If you're going to invoke this repeatedly or frequently, global installation is recommended.
 
 ## API
 
