@@ -36,7 +36,8 @@
   "scripts": {
     "test": "jest",
     "lint": "tslint -p tsconfig.json -c tslint.json",
-    "preversion": "npm run build",
+    "predeploy": "npm run build",
+    "deploy": "npx np",
     "build": "tsc",
     "release": "npx np"
   },
