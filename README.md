@@ -1,8 +1,6 @@
 # typed-install
 
-
 [![npm](https://img.shields.io/npm/v/typed-install.svg?style=flat-square)](https://www.npmjs.com/package/typed-install)
-
 
 You're writing Typescript and it's time to install your favorite node module. Has this ever happened to you?
 
@@ -41,15 +39,17 @@ The following packages were installed, but lack types:
   * heroku-config
 ```
 
-By default, `typedi` uses npm, saves packages into `dependencies`, and `@types` into `devDependencies.`. This is configurable with the following flags:
+By default, `typedi` uses `npm`, saves packages into `dependencies`, and `@types` into `devDependencies.`. This is configurable with the following flags:
 
-* **-d** | **--dev**: save everything into the dev dependencies
-* **-p** | **--prod**: save the @types into `dependencies`
-* **-y** | **--yarn**: install using yarn instead of npm
+* **-d** | **--dev**: save packages into the `devDependencies`
+* **-p** | **--prod**: save @types into `dependencies`
+* **-y** | **--yarn**: install using `yarn` instead of `npm`
+
+Using `--dev` and `--prod` together will probably not do what you expect.
 
 ### npx
 
-If you have `npm@5.2.0` or greater installed, you can run this via `npx` ([more info](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b)), a tool to run CLI packages without explicitly installing them. This is great for periodic or one time use. 
+If you have `npm@5.2.0` or greater installed, you can run this via `npx` ([more info](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b)), a tool to run CLI packages without explicitly installing them. This is great for periodic or one time use.
 
 The previous example becomes:
 
@@ -79,7 +79,7 @@ an object with any of the following keys (see above):
 
 ### shouldSpin (boolean, default `false`)
 
-Whether or not to run the fancy spinner. If you're using this in other code, this should probably be false. 
+Whether or not to run the fancy spinner. If you're using this in other code, this should probably be false.
 
 ```js
 const typedi = require('typed-install').default

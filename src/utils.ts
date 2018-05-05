@@ -20,6 +20,10 @@ const parseOpts = (dev: boolean, yarn: boolean) => {
 }
 
 export const npmInstall = (modules: string[], dev: boolean, yarn = false) => {
+  if (!modules.length) {
+    return Promise.resolve()
+  }
+
   const { command, devFlag } = parseOpts(dev, yarn)
 
   return new Promise((res, rej) =>

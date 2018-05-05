@@ -4,7 +4,8 @@ import * as _ from 'lodash'
 
 import { printPackages, npmInstall, getTypingInfo, missingTypes } from './utils'
 
-import ora = require('ora')
+import * as ora from 'ora'
+import chalk from 'chalk'
 
 /* TESTING
 * asdfasdfasdfasdf doesn't exist at all
@@ -12,6 +13,25 @@ import ora = require('ora')
 * lodash has types in @types
 * commander, striptags has included types (package.json)
 */
+
+const prodDeps = 'dependencies'
+const devDeps = 'devDependencies'
+
+// inverted is whether a flag was passed in
+// defaultDev is whether or not devDeps are the default if the first arg is false
+const whichDeps = (inverted: boolean, defaultDev = false) => {
+  if (inverted) {
+    if (defaultDev) {
+      return prodDeps
+    }
+    return devDeps
+  } else {
+    if (defaultDev) {
+      return devDeps
+    }
+    return prodDeps
+  }
+}
 
 export interface MainOpts {
   dev?: boolean
@@ -23,7 +43,7 @@ export default async (
   { dev, prod, yarn }: MainOpts = {},
   shouldSpin: boolean = false
 ) => {
-  // SPINNER
+  // SPINNER COMMANDS
   const spinner = ora()
 
   const waitOn = (message: string) => {
@@ -45,8 +65,23 @@ export default async (
   }
   // END OF SPINNER
 
+  // MAIN
+  if (dev && prod) {
+    console.log(
+      `${chalk.redBright(
+        'WARNING'
+      )} using both --dev and --prod will probably not do what you expect\n`
+    )
+  }
+
+  if (shouldSpin) {
+    console.log(`Running using ${chalk.cyanBright(yarn ? 'yarn' : 'npm')}\n`)
+  }
+
   try {
-    waitOn('Installing Packages')
+    waitOn(
+      `Installing Packages into ${chalk.cyanBright(whichDeps(Boolean(dev)))}`
+    )
     await npmInstall(modules, Boolean(dev), yarn)
   } catch (e) {
     fail(e)
@@ -64,7 +99,11 @@ export default async (
   succeed()
 
   try {
-    waitOn('Installing Available Types')
+    waitOn(
+      `Installing Available Types into ${chalk.cyanBright(
+        whichDeps(Boolean(prod), true)
+      )}`
+    )
     await npmInstall(typesToFetch.map(t => `@types/${t}`), !Boolean(prod), yarn)
   } catch (e) {
     fail(e)
@@ -72,14 +111,22 @@ export default async (
   succeed()
 
   const missing = _.difference(needsTypes, typesToFetch)
+  const installed = _.difference(modules, missing)
 
   printPackages(
-    '\nThe following packages were fully installed',
-    _.difference(modules, missing)
+    `\nThe following packages were ${chalk.greenBright.bold(
+      'fully installed'
+    )}`,
+    installed
   )
 
   printPackages(
-    'The following packages were installed, but lack types',
+    `${
+      // need a leading newline if this is our first print statement
+      installed.length ? '' : '\n'
+    }The following packages were installed, but ${chalk.yellowBright.bold(
+      'lack types'
+    )}`,
     missing
   )
 }
