@@ -4,7 +4,8 @@
     "outDir": "./lib",
     "module": "commonjs",
     "target": "es6",
-    "strict": true
+    "strict": true,
+    "declaration": true
   },
-  "exclude": ["__tests__"]
+  "exclude": ["__tests__", "lib"]
 }

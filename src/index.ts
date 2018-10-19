@@ -2,7 +2,12 @@
 
 import * as _ from 'lodash'
 
-import { printPackages, npmInstall, getTypingInfo, missingTypes } from './utils'
+import {
+  printPackages,
+  installWithTool,
+  getTypingInfo,
+  missingTypes
+} from './utils'
 
 import * as ora from 'ora'
 import chalk from 'chalk'
@@ -37,14 +42,21 @@ export interface MainOpts {
   dev?: boolean
   prod?: boolean
   yarn?: boolean
+  exact?: boolean
 }
 export default async (
   modules: string[],
-  { dev, prod, yarn }: MainOpts = {},
+  { dev = false, prod = false, yarn = false, exact = false }: MainOpts = {},
   shouldSpin: boolean = false
 ) => {
   // SPINNER COMMANDS
   const spinner = ora()
+
+  const log = (message: string, logAlways = false) => {
+    if (logAlways || shouldSpin) {
+      console.log(`${message}\n`)
+    }
+  }
 
   const waitOn = (message: string) => {
     if (shouldSpin) {
@@ -67,22 +79,21 @@ export default async (
 
   // MAIN
   if (dev && prod) {
-    console.log(
+    log(
       `${chalk.redBright(
         'WARNING'
-      )} using both --dev and --prod will probably not do what you expect\n`
+      )} using both --dev and --prod will probably not do what you expect`,
+      true
     )
   }
 
-  if (shouldSpin) {
-    console.log(`Running using ${chalk.cyanBright(yarn ? 'yarn' : 'npm')}\n`)
-  }
+  log(`Running using ${chalk.cyanBright(yarn ? 'yarn' : 'npm')}`)
 
   try {
     waitOn(
       `Installing Packages into ${chalk.cyanBright(whichDeps(Boolean(dev)))}`
     )
-    await npmInstall(modules, Boolean(dev), yarn)
+    await installWithTool(modules, { dev, yarn, exact })
   } catch (e) {
     fail(e)
   }
@@ -104,7 +115,11 @@ export default async (
         whichDeps(Boolean(prod), true)
       )}`
     )
-    await npmInstall(typesToFetch.map(t => `@types/${t}`), !Boolean(prod), yarn)
+    await installWithTool(typesToFetch.map(t => `@types/${t}`), {
+      dev: !Boolean(prod),
+      yarn,
+      exact
+    })
   } catch (e) {
     fail(e)
   }

@@ -41,9 +41,10 @@ The following packages were installed, but lack types:
 
 By default, `typedi` uses `npm`, saves packages into `dependencies`, and `@types` into `devDependencies.`. This is configurable with the following flags:
 
-* **-d** | **--dev**: save packages into the `devDependencies`
-* **-p** | **--prod**: save @types into `dependencies`
-* **-y** | **--yarn**: install using `yarn` instead of `npm`
+- **-d** | **--dev**: save packages into the `devDependencies`
+- **-p** | **--prod**: save @types into `dependencies`
+- **-y** | **--yarn**: install using `yarn` instead of `npm`
+- **-e** | **--exact**: install with an exact type instead of a caret (`^`)
 
 Using `--dev` and `--prod` together will probably not do what you expect.
 
@@ -73,9 +74,12 @@ An array of npm module names
 
 an object with any of the following keys (see above):
 
-* dev
-* prod
-* yarn
+- dev
+- prod
+- yarn
+- exact
+
+Any keys not present default to false.
 
 ### shouldSpin (boolean, default `false`)
 

@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-import program = require('commander')
+import * as program from 'commander'
 import main, { MainOpts } from './index'
+
 const pj = require('../package.json')
 
 program
@@ -10,6 +11,7 @@ program
   .option('-d, --dev', 'save everything into the dev dependencies')
   .option('-p, --prod', 'save the @types into `dependencies`')
   .option('-y, --yarn', 'install using yarn instead of npm')
+  .option('-e, --exact', 'pin modules to an exact version')
   .parse(process.argv)
 
 if (!program.args.length) {

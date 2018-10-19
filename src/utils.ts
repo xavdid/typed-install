@@ -12,23 +12,33 @@ export const printPackages = (message: string, packages: string[]) => {
   }
 }
 
-const parseOpts = (dev: boolean, yarn: boolean) => {
+const parseOpts = (yarn: boolean) => {
   return {
     command: yarn ? 'yarn add' : 'npm i',
-    devFlag: yarn ? '--dev' : '-D'
+    devFlag: '-D',
+    exactFlag: '-E'
   }
 }
 
-export const npmInstall = (modules: string[], dev: boolean, yarn = false) => {
+export const installWithTool = (
+  modules: string[],
+  {
+    yarn = false,
+    dev = false,
+    exact = false
+  }: { dev?: boolean; yarn?: boolean; exact?: boolean } = {}
+) => {
   if (!modules.length) {
     return Promise.resolve()
   }
 
-  const { command, devFlag } = parseOpts(dev, yarn)
+  const { command, devFlag, exactFlag } = parseOpts(yarn)
 
   return new Promise((res, rej) =>
     sh.exec(
-      [command, dev ? devFlag : '', ...modules].join(' '),
+      [command, dev ? devFlag : '', exact ? exactFlag : '', ...modules].join(
+        ' '
+      ),
       { async: true, silent: true },
       (code, stdout, stderr) => {
         if (code) {

@@ -1,12 +1,11 @@
 import {
   printPackages,
-  npmInstall,
+  installWithTool,
   getTypingInfo,
   missingTypes
 } from '../src/utils'
 
 import * as mock from 'mock-fs'
-import * as fs from 'mz/fs'
 
 import * as path from 'path'
 
@@ -100,7 +99,7 @@ describe.skip('installing from npm', () => {
     // the child_process doesn't play nicely with the mocked fs
     // the modules are installed in the project directory for real
     try {
-      await npmInstall(['heroku-config'], false)
+      await installWithTool(['heroku-config'])
       const pkg = require(path.resolve('./package.json'))
       expect(pkg.striptags).toBeTruthy()
     } catch (e) {
