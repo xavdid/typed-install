@@ -1,5 +1,5 @@
 import {
-  printPackages,
+  formatPackageMessage,
   installWithTool,
   getTypingInfo,
   missingTypes
@@ -10,21 +10,15 @@ import * as mock from 'mock-fs'
 import * as path from 'path'
 
 describe('printing packages', () => {
-  let spy: jest.SpyInstance
-
-  beforeEach(() => {
-    spy = jest.spyOn(console, 'log')
+  test('prints packages', () => {
+    const res = formatPackageMessage('this is a test', ['a', 'b', 'c'])
+    expect(res.includes(':')).toBeTruthy()
+    expect(res.includes('* a')).toBeTruthy()
   })
 
   test('prints packages', () => {
-    printPackages('this is a test', ['a', 'b', 'c'])
-    expect(spy).toHaveBeenCalled()
-    expect(spy.mock.calls[0][0]).toContain(':')
-  })
-
-  test('prints packages', () => {
-    printPackages('this is a test', [])
-    expect(spy).not.toHaveBeenCalled()
+    const res = formatPackageMessage('this is a test', [])
+    expect(res).toEqual('')
   })
 
   afterEach(() => {

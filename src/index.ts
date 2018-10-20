@@ -3,7 +3,7 @@
 import * as _ from 'lodash'
 
 import {
-  printPackages,
+  formatPackageMessage,
   installWithTool,
   getTypingInfo,
   missingTypes
@@ -53,7 +53,7 @@ export default async (
   const spinner = ora()
 
   const log = (message: string, logAlways = false) => {
-    if (logAlways || shouldSpin) {
+    if ((logAlways || shouldSpin) && message) {
       console.log(`${message}\n`)
     }
   }
@@ -128,20 +128,24 @@ export default async (
   const missing = _.difference(needsTypes, typesToFetch)
   const installed = _.difference(modules, missing)
 
-  printPackages(
-    `\nThe following packages were ${chalk.greenBright.bold(
-      'fully installed'
-    )}`,
-    installed
+  log(
+    formatPackageMessage(
+      `\nThe following packages were ${chalk.greenBright.bold(
+        'fully installed'
+      )}`,
+      installed
+    )
   )
 
-  printPackages(
-    `${
-      // need a leading newline if this is our first print statement
-      installed.length ? '' : '\n'
-    }The following packages were installed, but ${chalk.yellowBright.bold(
-      'lack types'
-    )}`,
-    missing
+  log(
+    formatPackageMessage(
+      `${
+        // need a leading newline if this is our first print statement
+        installed.length ? '' : '\n'
+      }The following packages were installed, but ${chalk.yellowBright.bold(
+        'lack types'
+      )}`,
+      missing
+    )
   )
 }

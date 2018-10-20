@@ -6,10 +6,10 @@ import * as pkgDir from 'pkg-dir'
 
 const REGISTRY_URL = 'https://registry.npmjs.org'
 
-export const printPackages = (message: string, packages: string[]) => {
-  if (packages.length) {
-    console.log(`${message}:\n${packages.map(p => `  * ${p}`).join('\n')}\n`)
-  }
+export const formatPackageMessage = (message: string, packages: string[]) => {
+  return packages.length
+    ? `${message}:\n${packages.map(p => `  * ${p}`).join('\n')}`
+    : ''
 }
 
 const parseOpts = (yarn: boolean) => {

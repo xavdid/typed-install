@@ -70,7 +70,7 @@ The main function takes the following options, in order:
 
 An array of npm module names
 
-### opts (object)
+### opts (object, default `{}`)
 
 an object with any of the following keys (see above):
 
@@ -83,7 +83,7 @@ Any keys not present default to false.
 
 ### shouldSpin (boolean, default `false`)
 
-Whether or not to run the fancy spinner. If you're using this in other code, this should probably be false.
+Whether or not to run the fancy spinner. If you're using this in other code, this should probably be `false`. Also controls whether messages are logged.
 
 ```js
 const typedi = require('typed-install').default
