@@ -1,12 +1,15 @@
 #!/usr/bin/env node
 
 import * as program from 'commander'
+import * as update from 'update-notifier'
 import main, { MainOpts } from './index'
 
-const pj = require('../package.json')
+const pkg = require('../package.json')
+
+update({ pkg })
 
 program
-  .version(pj.version)
+  .version(pkg.version)
   .usage('[options] <modules ...>')
   .option('-d, --dev', 'save everything into the dev dependencies')
   .option('-p, --prod', 'save the @types into `dependencies`')
