@@ -23,13 +23,12 @@
     "@types/got": "^9.0.0",
     "@types/jest": "^22.2.2",
     "@types/lodash": "^4.14.117",
-    "@types/mock-fs": "^3.6.30",
+    "@types/mock-fs": "^3",
     "@types/mz": "0.0.32",
-    "@types/ora": "*",
     "@types/shelljs": "0.7.6",
     "@types/update-notifier": "2.5.0",
     "jest": "^24.8.0",
-    "mock-fs": "^4.4.2",
+    "mock-fs": "^4.10.0",
     "ts-jest": "^24.0.0",
     "tslint": "^5.9.1",
     "tslint-config-prettier": "^1.6.0",
@@ -61,7 +60,6 @@
     "lib/index.d.ts"
   ],
   "jest": {
-    "silent": true,
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     },
