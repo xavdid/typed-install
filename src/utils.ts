@@ -5,6 +5,7 @@ import { resolve } from 'path'
 import * as pkgDir from 'pkg-dir'
 
 const REGISTRY_URL = 'https://registry.npmjs.org'
+const EXCEPTION_PACKAGES = new Set(['jest'])
 
 export const formatPackageMessage = (message: string, packages: string[]) => {
   return packages.length
@@ -39,6 +40,7 @@ export const installWithTool = (
       [command, dev ? devFlag : '', exact ? exactFlag : '', ...modules].join(
         ' '
       ),
+      // yarn works when silent, but npm doesn't
       { async: true, silent: true },
       (code, stdout, stderr) => {
         if (code) {
@@ -68,6 +70,9 @@ export const getTypingInfo = async (name: string) => {
 
 // returns null for functions that have type info and the module name if they're missing
 export const missingTypes = async (m: string) => {
+  if (EXCEPTION_PACKAGES.has(m)) {
+    return m
+  }
   const pkgRoot = await pkgDir()
   const installDir = resolve(`${pkgRoot || '.'}/node_modules/${m}`)
   try {

@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+import { existsSync } from 'fs'
+
 import * as _ from 'lodash'
 
 import {
@@ -13,11 +15,11 @@ import * as ora from 'ora'
 import chalk from 'chalk'
 
 /* TESTING
-* asdfasdfasdfasdf doesn't exist at all
-* heroku-config has no types at all
-* lodash has types in @types
-* commander, striptags has included types (package.json)
-*/
+ * asdfasdfasdfasdf doesn't exist at all
+ * heroku-config has no types at all
+ * lodash has types in @types
+ * commander, striptags has included types (package.json)
+ */
 
 const prodDeps = 'dependencies'
 const devDeps = 'devDependencies'
@@ -87,6 +89,9 @@ export default async (
     )
   }
 
+  // if there's a yarn lockfile, assume they want to use it
+  yarn = yarn || existsSync('./yarn.lock')
+
   log(`Running using ${chalk.cyanBright(yarn ? 'yarn' : 'npm')}`)
 
   try {
@@ -99,14 +104,14 @@ export default async (
   }
   succeed()
 
-  const needsTypes = _.filter(
-    await Promise.all(modules.map(missingTypes))
+  const needsTypes = (await Promise.all(modules.map(missingTypes))).filter(
+    Boolean
   ) as string[]
 
   waitOn('Checking for @types')
-  const typesToFetch = _.filter(
-    await Promise.all(needsTypes.map(m => getTypingInfo(m)))
-  ) as string[]
+  const typesToFetch = (await Promise.all(
+    needsTypes.map(getTypingInfo)
+  )).filter(Boolean) as string[]
   succeed()
 
   try {

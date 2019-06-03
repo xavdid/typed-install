@@ -43,10 +43,18 @@ By default, `typedi` uses `npm`, saves packages into `dependencies`, and `@types
 
 - **-d** | **--dev**: save packages into the `devDependencies`
 - **-p** | **--prod**: save @types into `dependencies`
-- **-y** | **--yarn**: install using `yarn` instead of `npm`
-- **-e** | **--exact**: install with an exact type instead of a caret (`^`)
+- **-y** | **--yarn**: install using `yarn` instead of `npm`. Will flip to true if `yarn.lock` is found in this directory
+- **-e** | **--exact**: install with an exact type instead of a caret (`^`). This overwrites your config files for the tool you're using
 
 Using `--dev` and `--prod` together will probably not do what you expect.
+
+### Exceptions
+
+As of the release of `v1.0.6`, the following packages ship with a stub types file, confusing this utility:
+
+- `jest`
+
+Those are always explicitly fetched. If you know of another example (or one of the above is shipping actual types) [file an issue](https://github.com/xavdid/typed-install/issues/new) and I'll add the exception.
 
 ### npx
 
