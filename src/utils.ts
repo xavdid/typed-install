@@ -1,10 +1,16 @@
-import * as sh from 'shelljs'
-import * as got from 'got'
-import * as fs from 'mz/fs'
+import { access } from 'mz/fs'
+import { exec } from 'shelljs'
 import { resolve } from 'path'
+import * as got from 'got'
 import * as pkgDir from 'pkg-dir'
 
+import debugFunc from 'debug'
+const debug = debugFunc('typedi')
+
 const REGISTRY_URL = 'https://registry.npmjs.org'
+
+// some packages are exceptions - they ship with types, but those are stubs for some reason
+// if a package is in this set, then @types/x will always be installed
 const EXCEPTION_PACKAGES = new Set(['jest'])
 
 export const formatPackageMessage = (message: string, packages: string[]) => {
@@ -36,7 +42,7 @@ export const installWithTool = (
   const { command, devFlag, exactFlag } = parseOpts(yarn)
 
   return new Promise((res, rej) =>
-    sh.exec(
+    exec(
       [command, dev ? devFlag : '', exact ? exactFlag : '', ...modules].join(
         ' '
       ),
@@ -52,12 +58,14 @@ export const installWithTool = (
   )
 }
 
-// gets the `@types/name` registry info
+/**
+ * gets the `@types/name` registry info
+ */
 export const getTypingInfo = async (name: string) => {
-  // make sure to encode the / in the name
   const url = `${REGISTRY_URL}/@${encodeURIComponent(`types/${name}`)}`
   try {
     await got(url)
+    // if this completes without throwing, then the types exist
     return name
   } catch (e) {
     if (e.statusCode === 404) {
@@ -68,9 +76,14 @@ export const getTypingInfo = async (name: string) => {
   }
 }
 
-// returns null for functions that have type info and the module name if they're missing
+/**
+ * returns `null` for functions that have type info
+ * returns the module name if types are missing
+ */
 export const missingTypes = async (m: string) => {
+  debug('looking at', m)
   if (EXCEPTION_PACKAGES.has(m)) {
+    debug(m, 'is an exception, returning')
     return m
   }
   const pkgRoot = await pkgDir()
@@ -81,17 +94,19 @@ export const missingTypes = async (m: string) => {
     // if the file exists at root, it doesn't need to be specified in pkg
     let orphanIndex = false
     try {
-      await fs.access(`${installDir}/index.d.ts`)
+      await access(`${installDir}/index.d.ts`)
       orphanIndex = true
     } catch {}
 
     if (pkg.typings || pkg.types || orphanIndex) {
+      debug(m, 'has native types')
       return null
     } else {
+      debug(m, 'is missing types')
       return m
     }
   } catch (e) {
-    console.error('problem reading', m, ':', e)
+    console.error('problem reading', m, '-', e)
     return null
   }
 }

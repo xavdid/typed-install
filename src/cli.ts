@@ -19,8 +19,8 @@ program
 
 if (!program.args.length) {
   console.error(`ERR: specify at least one module`)
-  process.exit(1)
+  process.exitCode = 1
+} else {
+  // the program object has the flags set on it when they're present
+  main(program.args, program as MainOpts, true).catch(console.error)
 }
-
-// the program object has the flags set on it when they're present
-main(program.args, program as MainOpts, true)

@@ -2,6 +2,7 @@
 
 import { existsSync } from 'fs'
 
+import chalk from 'chalk'
 import * as _ from 'lodash'
 
 import {
@@ -10,9 +11,10 @@ import {
   getTypingInfo,
   missingTypes
 } from './utils'
+import { Spinner } from './spinner'
 
-import * as ora from 'ora'
-import chalk from 'chalk'
+import debugFunc from 'debug'
+const debug = debugFunc('typedi')
 
 /* TESTING
  * asdfasdfasdfasdf doesn't exist at all
@@ -51,37 +53,10 @@ export default async (
   { dev = false, prod = false, yarn = false, exact = false }: MainOpts = {},
   shouldSpin: boolean = false
 ) => {
-  // SPINNER COMMANDS
-  const spinner = ora()
-
-  const log = (message: string, logAlways = false) => {
-    if ((logAlways || shouldSpin) && message) {
-      console.log(`${message}\n`)
-    }
-  }
-
-  const waitOn = (message: string) => {
-    if (shouldSpin) {
-      spinner.start(message)
-    }
-  }
-  const succeed = () => {
-    if (shouldSpin) {
-      spinner.succeed()
-    }
-  }
-  const fail = (e: any) => {
-    if (shouldSpin) {
-      spinner.fail()
-    }
-    console.error(e)
-    process.exit(e.code)
-  }
-  // END OF SPINNER
-
+  const spinner = new Spinner(shouldSpin)
   // MAIN
   if (dev && prod) {
-    log(
+    spinner.log(
       `${chalk.redBright(
         'WARNING'
       )} using both --dev and --prod will probably not do what you expect`,
@@ -89,33 +64,37 @@ export default async (
     )
   }
 
-  // if there's a yarn lockfile, assume they want to use it
+  // if there's a yarn lockfile, assume they want to use yarn
   yarn = yarn || existsSync('./yarn.lock')
 
-  log(`Running using ${chalk.cyanBright(yarn ? 'yarn' : 'npm')}`)
+  spinner.log(`Running using ${chalk.cyanBright(yarn ? 'yarn' : 'npm')}`)
 
   try {
-    waitOn(
+    spinner.waitOn(
       `Installing Packages into ${chalk.cyanBright(whichDeps(Boolean(dev)))}`
     )
     await installWithTool(modules, { dev, yarn, exact })
   } catch (e) {
-    fail(e)
+    spinner.fail(e)
+    return
   }
-  succeed()
+  spinner.succeed()
 
   const needsTypes = (await Promise.all(modules.map(missingTypes))).filter(
     Boolean
   ) as string[]
 
-  waitOn('Checking for @types')
+  debug('missing types:', needsTypes)
+
+  spinner.waitOn('Checking for @types')
   const typesToFetch = (await Promise.all(
     needsTypes.map(getTypingInfo)
   )).filter(Boolean) as string[]
-  succeed()
+  spinner.succeed()
+  debug('found @types for:', typesToFetch)
 
   try {
-    waitOn(
+    spinner.waitOn(
       `Installing Available Types into ${chalk.cyanBright(
         whichDeps(Boolean(prod), true)
       )}`
@@ -126,14 +105,15 @@ export default async (
       exact
     })
   } catch (e) {
-    fail(e)
+    spinner.fail(e)
+    return
   }
-  succeed()
+  spinner.succeed()
 
   const missing = _.difference(needsTypes, typesToFetch)
   const installed = _.difference(modules, missing)
 
-  log(
+  spinner.log(
     formatPackageMessage(
       `\nThe following packages were ${chalk.greenBright.bold(
         'fully installed'
@@ -142,7 +122,7 @@ export default async (
     )
   )
 
-  log(
+  spinner.log(
     formatPackageMessage(
       `${
         // need a leading newline if this is our first print statement

@@ -11,6 +11,7 @@
   "dependencies": {
     "chalk": "2.4.1",
     "commander": "2.20.0",
+    "debug": "4.1.1",
     "got": "9.6.0",
     "lodash": "4.17.11",
     "mz": "2.7.0",
@@ -20,11 +21,13 @@
     "update-notifier": "3.0.0"
   },
   "devDependencies": {
+    "@types/debug": "4.1.5",
     "@types/got": "^9.0.0",
     "@types/jest": "^22.2.2",
     "@types/lodash": "^4.14.117",
     "@types/mock-fs": "^3",
     "@types/mz": "0.0.32",
+    "@types/node": "12.12.5",
     "@types/shelljs": "0.7.6",
     "@types/update-notifier": "2.5.0",
     "jest": "^24.8.0",
@@ -32,19 +35,20 @@
     "ts-jest": "^24.0.0",
     "tslint": "^5.9.1",
     "tslint-config-prettier": "^1.6.0",
-    "typescript": "2.7.2"
+    "typescript": "3.6.4"
   },
   "scripts": {
     "test": "jest",
     "lint": "tslint -p tsconfig.json -c tslint.json",
-    "posttest": "npm run lint",
     "predeploy": "rm -rf lib && npm rum build",
     "deploy": "npx np",
     "build": "tsc",
-    "release": "npx np"
+    "release": "npx np",
+    "validate": "npm run test && npm run lint"
   },
   "keywords": [
     "typescript",
+    "types",
     "npm",
     "yarn",
     "installing"

@@ -3,9 +3,15 @@
     "rootDir": "./src",
     "outDir": "./lib",
     "module": "commonjs",
-    "target": "es6",
+    "target": "ES2017",
     "strict": true,
-    "declaration": true
+    "lib": [
+      // es6 defaults
+      "es2017",
+      "dom"
+    ]
+    // "jsx": "react"
+    // "declaration": true
   },
   "exclude": ["__tests__", "lib"]
 }
