@@ -47,10 +47,11 @@ export interface MainOpts {
   prod?: boolean
   yarn?: boolean
   exact?: boolean
+  packageManager?: string
 }
 export default async (
   modules: string[],
-  { dev = false, prod = false, yarn = false, exact = false }: MainOpts = {},
+  { dev = false, prod = false, yarn = false, exact = false, packageManager }: MainOpts = {},
   shouldSpin: boolean = false
 ) => {
   const spinner = new Spinner(shouldSpin)
@@ -64,16 +65,23 @@ export default async (
     )
   }
 
-  // if there's a yarn lockfile, assume they want to use yarn
-  yarn = yarn || existsSync('./yarn.lock')
+  if (!packageManager) {
+    if (existsSync('./pnpm-lock.yaml')) { // lock file for pnpm
+      packageManager = 'pnpm'
+    } else if (yarn || existsSync('./yarn.lock')) { // if there's a yarn lockfile, assume they want to use yarn
+      packageManager = 'yarn'
+    } else {
+      packageManager = 'npm'
+    }
+  }
 
-  spinner.log(`Running using ${chalk.cyanBright(yarn ? 'yarn' : 'npm')}`)
+  spinner.log(`Running using ${chalk.cyanBright(packageManager.toLowerCase())}`)
 
   try {
     spinner.waitOn(
       `Installing Packages into ${chalk.cyanBright(whichDeps(Boolean(dev)))}`
     )
-    await installWithTool(modules, { dev, yarn, exact })
+    await installWithTool(modules, { dev, packageManager, exact })
   } catch (e) {
     spinner.fail(e)
     return
@@ -101,7 +109,7 @@ export default async (
     )
     await installWithTool(typesToFetch.map(t => `@types/${t}`), {
       dev: !Boolean(prod),
-      yarn,
+      packageManager,
       exact
     })
   } catch (e) {
@@ -125,8 +133,8 @@ export default async (
   spinner.log(
     formatPackageMessage(
       `${
-        // need a leading newline if this is our first print statement
-        installed.length ? '' : '\n'
+      // need a leading newline if this is our first print statement
+      installed.length ? '' : '\n'
       }The following packages were installed, but ${chalk.yellowBright.bold(
         'lack types'
       )}`,
