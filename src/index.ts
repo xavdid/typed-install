@@ -3,13 +3,14 @@
 import { existsSync } from 'fs'
 
 import chalk from 'chalk'
-import * as _ from 'lodash'
+import { difference } from 'lodash'
 
 import {
   formatPackageMessage,
   installWithTool,
   getTypingInfo,
-  missingTypes
+  missingTypes,
+  SUPPORTED_PACKAGE_MANAGERS
 } from './utils'
 import { Spinner } from './spinner'
 
@@ -20,7 +21,7 @@ const debug = debugFunc('typedi')
  * asdfasdfasdfasdf doesn't exist at all
  * heroku-config has no types at all
  * lodash has types in @types
- * commander, striptags has included types (package.json)
+ * commander, striptags have included types (package.json)
  */
 
 const prodDeps = 'dependencies'
@@ -45,13 +46,20 @@ const whichDeps = (inverted: boolean, defaultDev = false) => {
 export interface MainOpts {
   dev?: boolean
   prod?: boolean
-  yarn?: boolean
+  yarn?: boolean // deprecated
   exact?: boolean
-  packageManager?: string
+  packageManager?: SUPPORTED_PACKAGE_MANAGERS
 }
 export default async (
   modules: string[],
-  { dev = false, prod = false, yarn = false, exact = false, packageManager }: MainOpts = {},
+  {
+    dev = false,
+    prod = false,
+    yarn = false,
+    exact = false,
+    // can't set a default here because we want to differentiate between the default and what the user actually passes
+    packageManager
+  }: MainOpts = {},
   shouldSpin: boolean = false
 ) => {
   const spinner = new Spinner(shouldSpin)
@@ -66,16 +74,24 @@ export default async (
   }
 
   if (!packageManager) {
-    if (existsSync('./pnpm-lock.yaml')) { // lock file for pnpm
+    if (existsSync('./pnpm-lock.yaml')) {
+      // lock file for pnpm
       packageManager = 'pnpm'
-    } else if (yarn || existsSync('./yarn.lock')) { // if there's a yarn lockfile, assume they want to use yarn
+    } else if (yarn || existsSync('./yarn.lock')) {
+      // if there's a yarn lockfile, assume they want to use yarn
       packageManager = 'yarn'
+      if (yarn) {
+        spinner.log(
+          'use of the --yarn option is deprecated, use --package-manager=yarn instead',
+          true
+        )
+      }
     } else {
       packageManager = 'npm'
     }
   }
 
-  spinner.log(`Running using ${chalk.cyanBright(packageManager.toLowerCase())}`)
+  spinner.log(`Running using ${chalk.cyanBright(packageManager)}`)
 
   try {
     spinner.waitOn(
@@ -118,8 +134,8 @@ export default async (
   }
   spinner.succeed()
 
-  const missing = _.difference(needsTypes, typesToFetch)
-  const installed = _.difference(modules, missing)
+  const missing = difference(needsTypes, typesToFetch)
+  const installed = difference(modules, missing)
 
   spinner.log(
     formatPackageMessage(
@@ -133,8 +149,8 @@ export default async (
   spinner.log(
     formatPackageMessage(
       `${
-      // need a leading newline if this is our first print statement
-      installed.length ? '' : '\n'
+        // need a leading newline if this is our first print statement
+        installed.length ? '' : '\n'
       }The following packages were installed, but ${chalk.yellowBright.bold(
         'lack types'
       )}`,

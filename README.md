@@ -39,11 +39,12 @@ The following packages were installed, but lack types:
   * heroku-config
 ```
 
-By default, `typedi` uses `npm`, saves packages into `dependencies`, and `@types` into `devDependencies.`. This is configurable with the following flags:
+By default, `typedi` guesses your preferred package manager (based on a lockfile), uses `npm` if there's no hint, saves packages into `dependencies`, and `@types` into `devDependencies.`. This is configurable with the following flags:
 
 - **-d** | **--dev**: save packages into the `devDependencies`
 - **-p** | **--prod**: save @types into `dependencies`
-- **-y** | **--yarn**: install using `yarn` instead of `npm`. Will flip to true if `yarn.lock` is found in this directory
+- **-m** | **--package-manager**: one of `npm`, `yarn`, or `pnpm`. Specifying one of these overwrites lockfile guessing.
+- **-y** | **--yarn**: **DEPRECATED** equivalent of using `--package-manager yarn`, removed in the next major version
 - **-e** | **--exact**: install with an exact type instead of a caret (`^`). This overwrites your config files for the tool you're using
 
 Using `--dev` and `--prod` together will probably not do what you expect.
@@ -56,7 +57,7 @@ As of the release of `v1.0.6`, the following packages ship with a stub types fil
 
 Those are always explicitly fetched. If you know of another example (or one of the above is shipping actual types) [file an issue](https://github.com/xavdid/typed-install/issues/new) and I'll add the exception.
 
-### npx
+### Using without installing
 
 If you have `npm@5.2.0` or greater installed, you can run this via `npx` ([more info](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b)), a tool to run CLI packages without explicitly installing them. This is great for periodic or one time use.
 
@@ -65,6 +66,8 @@ The previous example becomes:
 ```
 % npx typed-install heroku-config lodash striptags
 ```
+
+Similarly, if you're using `yarn@2`, you can use `yarn dlx` (see [the docs](https://yarnpkg.com/cli/dlx)).
 
 If you're going to invoke this repeatedly or frequently, global installation is recommended.
 
@@ -84,7 +87,8 @@ an object with any of the following keys (see above):
 
 - dev
 - prod
-- yarn
+- packageManager
+- yarn (**DEPRECATED**)
 - exact
 
 Any keys not present default to false.

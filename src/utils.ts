@@ -19,25 +19,14 @@ export const formatPackageMessage = (message: string, packages: string[]) => {
     : ''
 }
 
-const parseOpts = (packageManager: string) => {
-  let command: string
+export type SUPPORTED_PACKAGE_MANAGERS = 'npm' | 'yarn' | 'pnpm'
 
-  switch (packageManager.toLowerCase()) {
-    case 'npm':
-      command = 'npm i'
-      break
-
-    case 'yarn':
-      command = 'yarn add'
-      break
-
-    case 'pnpm':
-      command = 'pnpm i'
-      break
-
-    default:
-      throw new Error('--package-manager is not valid')
-  }
+const parseOpts = (packageManager: SUPPORTED_PACKAGE_MANAGERS) => {
+  const command = {
+    npm: 'npm i',
+    yarn: 'yarn add',
+    pnpm: 'pnpm i'
+  }[packageManager]
 
   return {
     command,
@@ -52,7 +41,11 @@ export const installWithTool = (
     packageManager = 'npm',
     dev = false,
     exact = false
-  }: { dev?: boolean; packageManager?: string; exact?: boolean } = {}
+  }: {
+    dev?: boolean
+    packageManager?: SUPPORTED_PACKAGE_MANAGERS
+    exact?: boolean
+  } = {}
 ) => {
   if (!modules.length) {
     return Promise.resolve()
@@ -115,7 +108,7 @@ export const missingTypes = async (m: string) => {
     try {
       await access(`${installDir}/index.d.ts`)
       orphanIndex = true
-    } catch { }
+    } catch {}
 
     if (pkg.typings || pkg.types || orphanIndex) {
       debug(m, 'has native types')
