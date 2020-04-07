@@ -1,7 +1,7 @@
 import { access } from 'mz/fs'
 import { exec } from 'shelljs'
 import { resolve } from 'path'
-import * as got from 'got'
+import got from 'got'
 import * as pkgDir from 'pkg-dir'
 
 import debugFunc from 'debug'
@@ -75,17 +75,14 @@ export const installWithTool = (
  */
 export const getTypingInfo = async (name: string) => {
   const url = `${REGISTRY_URL}/@${encodeURIComponent(`types/${name}`)}`
-  try {
-    await got(url)
-    // if this completes without throwing, then the types exist
-    return name
-  } catch (e) {
-    if (e.statusCode === 404) {
-      return null
-    } else {
-      throw e
-    }
+
+  const response = await got(url, { throwHttpErrors: false })
+  if (response.statusCode === 404) {
+    return null
+  } else if (response.statusCode >= 400) {
+    throw new Error(`trouble reading from registry: ${response.body}`)
   }
+  return name
 }
 
 /**

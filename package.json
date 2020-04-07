@@ -9,33 +9,33 @@
     "typedi": "lib/cli.js"
   },
   "dependencies": {
-    "chalk": "2.4.1",
+    "chalk": "4.0.0",
     "commander": "2.20.0",
     "debug": "4.1.1",
-    "got": "9.6.0",
-    "lodash": "4.17.13",
+    "got": "10.7.0",
+    "lodash": "4.17.15",
     "mz": "2.7.0",
-    "ora": "3.4.0",
+    "ora": "4.0.3",
     "pkg-dir": "4.2.0",
-    "shelljs": "0.7.8",
-    "update-notifier": "3.0.0"
+    "shelljs": "0.8.3",
+    "update-notifier": "4.1.0"
   },
   "devDependencies": {
     "@types/debug": "4.1.5",
     "@types/got": "^9.0.0",
-    "@types/jest": "^22.2.2",
+    "@types/jest": "^25.2.1",
     "@types/lodash": "^4.14.117",
     "@types/mock-fs": "^3",
-    "@types/mz": "0.0.32",
+    "@types/mz": "2.7.0",
     "@types/node": "12.12.5",
     "@types/shelljs": "0.7.6",
-    "@types/update-notifier": "2.5.0",
-    "jest": "^24.8.0",
+    "@types/update-notifier": "4.1.0",
+    "jest": "^25.2.7",
     "mock-fs": "^4.10.0",
-    "ts-jest": "^24.0.0",
-    "tslint": "^5.9.1",
+    "ts-jest": "^25.3.1",
+    "tslint": "^6.1.1",
     "tslint-config-prettier": "^1.6.0",
-    "typescript": "3.6.4"
+    "typescript": "3.8.3"
   },
   "scripts": {
     "test": "jest",

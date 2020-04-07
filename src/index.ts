@@ -2,7 +2,7 @@
 
 import { existsSync } from 'fs'
 
-import chalk from 'chalk'
+import chalk = require('chalk')
 import { difference } from 'lodash'
 
 import {
