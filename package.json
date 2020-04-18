@@ -61,7 +61,7 @@
   },
   "files": [
     "lib/*.js",
-    "lib/index.d.ts"
+    "lib/*.d.ts"
   ],
   "jest": {
     "transform": {
