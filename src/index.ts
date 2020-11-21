@@ -46,7 +46,6 @@ const whichDeps = (inverted: boolean, defaultDev = false): string => {
 export interface MainOpts {
   dev?: boolean
   prod?: boolean
-  yarn?: boolean // deprecated
   exact?: boolean
   packageManager?: SUPPORTED_PACKAGE_MANAGERS
 }
@@ -55,9 +54,8 @@ export default async (
   {
     dev = false,
     prod = false,
-    yarn = false,
     exact = false,
-    // can't set a default here because we want to differentiate between the default and what the user actually passes
+    // can't set a default value here (like npm) because we have custom fallback logic
     packageManager
   }: MainOpts = {},
   shouldSpin: boolean = false
@@ -77,15 +75,9 @@ export default async (
     if (existsSync('./pnpm-lock.yaml')) {
       // lock file for pnpm
       packageManager = 'pnpm'
-    } else if (yarn || existsSync('./yarn.lock')) {
+    } else if (existsSync('./yarn.lock')) {
       // if there's a yarn lockfile, assume they want to use yarn
       packageManager = 'yarn'
-      if (yarn) {
-        spinner.log(
-          'use of the --yarn option is deprecated, use --package-manager=yarn instead',
-          true
-        )
-      }
     } else {
       packageManager = 'npm'
     }

@@ -44,7 +44,6 @@ By default, `typedi` guesses your preferred package manager (based on a lockfile
 - **-d** | **--dev**: save packages into the `devDependencies`
 - **-p** | **--prod**: save @types into `dependencies`
 - **-m** | **--package-manager**: one of `npm`, `yarn`, or `pnpm`. Specifying one of these overwrites lockfile guessing.
-- **-y** | **--yarn**: **DEPRECATED** equivalent of using `--package-manager yarn`, removed in the next major version
 - **-e** | **--exact**: install with an exact type instead of a caret (`^`). This overwrites your config files for the tool you're using
 
 Using `--dev` and `--prod` together will probably not do what you expect.
@@ -88,7 +87,6 @@ an object with any of the following keys (see above):
 - dev
 - prod
 - packageManager
-- yarn (**DEPRECATED**)
 - exact
 
 Any keys not present default to false.

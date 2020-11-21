@@ -1,6 +1,7 @@
-import { access } from 'mz/fs'
-import { exec } from 'shelljs'
+import {existsSync} from 'fs'
 import { resolve } from 'path'
+
+import { exec } from 'shelljs'
 import got from 'got'
 import * as pkgDir from 'pkg-dir'
 
@@ -108,10 +109,9 @@ export const missingTypes = async (m: string): Promise<string | null> => {
 
     // if the file exists at root, it doesn't need to be specified in pkg
     let orphanIndex = false
-    try {
-      await access(`${installDir}/index.d.ts`)
+    if (existsSync(`${installDir}/index.d.ts`)){
       orphanIndex = true
-    } catch {}
+    }
 
     if (pkg.typings !== undefined || pkg.types !== undefined || orphanIndex) {
       debug(m, 'has native types')
@@ -123,5 +123,17 @@ export const missingTypes = async (m: string): Promise<string | null> => {
   } catch (e) {
     console.error('problem reading', m, '-', e)
     return null
+  }
+}
+
+export const guessPackageManager = (): SUPPORTED_PACKAGE_MANAGERS => {
+  if (existsSync('./pnpm-lock.yaml')) {
+    // lock file for pnpm
+    return 'pnpm'
+  } else if (existsSync('./yarn.lock')) {
+    // if there's a yarn lockfile, assume they want to use yarn
+    return 'yarn'
+  } else {
+    return 'npm'
   }
 }

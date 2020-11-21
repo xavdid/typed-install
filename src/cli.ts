@@ -12,12 +12,11 @@ update({ pkg })
 program
   .version(pkg.version)
   .usage('[options] <modules ...>')
-  .option('-d, --dev', 'save everything into the dev dependencies')
+  .option('-d, --dev', 'save everything into `devDependencies`')
   .option('-p, --prod', 'save the @types into `dependencies`')
-  .option('-y, --yarn', 'install using yarn instead of npm')
   .option(
     '-m, --package-manager <packageManager>',
-    'specify package manager (npm|yarn|pnpm)'
+    'specify package manager (npm|yarn|pnpm). Guesses using lockfile by default'
   )
   .option('-e, --exact', 'pin modules to an exact version')
   .parse(process.argv)
