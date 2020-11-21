@@ -13,15 +13,20 @@ const REGISTRY_URL = 'https://registry.npmjs.org'
 // if a package is in this set, then @types/x will always be installed
 const EXCEPTION_PACKAGES = new Set(['jest'])
 
-export const formatPackageMessage = (message: string, packages: string[]) => {
-  return packages.length
+export const formatPackageMessage = (
+  message: string,
+  packages: string[]
+): string => {
+  return packages.length !== 0
     ? `${message}:\n${packages.map(p => `  * ${p}`).join('\n')}`
     : ''
 }
 
 export type SUPPORTED_PACKAGE_MANAGERS = 'npm' | 'yarn' | 'pnpm'
 
-const parseOpts = (packageManager: SUPPORTED_PACKAGE_MANAGERS) => {
+const parseOpts = (
+  packageManager: SUPPORTED_PACKAGE_MANAGERS
+): { command: string; devFlag: string; exactFlag: string } => {
   const command = {
     npm: 'npm i',
     yarn: 'yarn add',
@@ -35,7 +40,7 @@ const parseOpts = (packageManager: SUPPORTED_PACKAGE_MANAGERS) => {
   }
 }
 
-export const installWithTool = (
+export const installWithTool = async (
   modules: string[],
   {
     packageManager = 'npm',
@@ -46,14 +51,14 @@ export const installWithTool = (
     packageManager?: SUPPORTED_PACKAGE_MANAGERS
     exact?: boolean
   } = {}
-) => {
-  if (!modules.length) {
-    return Promise.resolve()
+): Promise<string | null> => {
+  if (modules.length === 0) {
+    return await Promise.resolve(null)
   }
 
   const { command, devFlag, exactFlag } = parseOpts(packageManager)
 
-  return new Promise((res, rej) =>
+  return await new Promise((resolve, reject) =>
     exec(
       [command, dev ? devFlag : '', exact ? exactFlag : '', ...modules].join(
         ' '
@@ -61,10 +66,10 @@ export const installWithTool = (
       // yarn works when silent, but npm doesn't
       { async: true, silent: true },
       (code, stdout, stderr) => {
-        if (code) {
-          rej(stderr)
+        if (code !== 0) {
+          reject(stderr)
         }
-        res(stdout)
+        resolve(stdout)
       }
     )
   )
@@ -73,7 +78,7 @@ export const installWithTool = (
 /**
  * gets the `@types/name` registry info
  */
-export const getTypingInfo = async (name: string) => {
+export const getTypingInfo = async (name: string): Promise<string | null> => {
   const url = `${REGISTRY_URL}/@${encodeURIComponent(`types/${name}`)}`
 
   const response = await got(url, { throwHttpErrors: false })
@@ -89,15 +94,16 @@ export const getTypingInfo = async (name: string) => {
  * returns `null` for functions that have type info
  * returns the module name if types are missing
  */
-export const missingTypes = async (m: string) => {
+export const missingTypes = async (m: string): Promise<string | null> => {
   debug('looking at', m)
   if (EXCEPTION_PACKAGES.has(m)) {
     debug(m, 'is an exception, returning')
     return m
   }
   const pkgRoot = await pkgDir()
-  const installDir = resolve(`${pkgRoot || '.'}/node_modules/${m}`)
+  const installDir = resolve(`${pkgRoot ?? '.'}/node_modules/${m}`)
   try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const pkg = require(`${installDir}/package.json`)
 
     // if the file exists at root, it doesn't need to be specified in pkg
@@ -107,7 +113,7 @@ export const missingTypes = async (m: string) => {
       orphanIndex = true
     } catch {}
 
-    if (pkg.typings || pkg.types || orphanIndex) {
+    if (pkg.typings !== undefined || pkg.types !== undefined || orphanIndex) {
       debug(m, 'has native types')
       return null
     } else {

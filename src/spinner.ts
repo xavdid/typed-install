@@ -6,23 +6,25 @@ export class Spinner {
     this.spinner = ora()
   }
 
-  public log = (message: string, logAlways = false) => {
-    if ((logAlways || this.shouldSpin) && message) {
+  public log = (message: string, logAlways = false): void => {
+    if ((logAlways || this.shouldSpin) && message !== '') {
       console.log(`${message}\n`)
     }
   }
 
-  public waitOn = (message: string) => {
+  public waitOn = (message: string): void => {
     if (this.shouldSpin) {
       this.spinner.start(message)
     }
   }
-  public succeed = () => {
+
+  public succeed = (): void => {
     if (this.shouldSpin) {
       this.spinner.succeed()
     }
   }
-  public fail = (e: any) => {
+
+  public fail = (e: any): void => {
     if (this.shouldSpin) {
       this.spinner.fail()
     }

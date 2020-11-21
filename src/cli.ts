@@ -4,6 +4,7 @@ import * as program from 'commander'
 import * as update from 'update-notifier'
 import main, { MainOpts } from './index'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const pkg = require('../package.json')
 
 update({ pkg })
@@ -21,7 +22,7 @@ program
   .option('-e, --exact', 'pin modules to an exact version')
   .parse(process.argv)
 
-if (!program.args.length) {
+if (program.args.length === 0) {
   console.error(`ERR: specify at least one module`)
   process.exitCode = 1
 } else {

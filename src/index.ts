@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 
 import { existsSync } from 'fs'
-
-import chalk = require('chalk')
 import { difference } from 'lodash'
 
 import {
@@ -15,6 +13,8 @@ import {
 import { Spinner } from './spinner'
 
 import debugFunc from 'debug'
+
+import chalk = require('chalk')
 const debug = debugFunc('typedi')
 
 /* TESTING
@@ -29,7 +29,7 @@ const devDeps = 'devDependencies'
 
 // inverted is whether a flag was passed in
 // defaultDev is whether or not devDeps are the default if the first arg is false
-const whichDeps = (inverted: boolean, defaultDev = false) => {
+const whichDeps = (inverted: boolean, defaultDev = false): string => {
   if (inverted) {
     if (defaultDev) {
       return prodDeps
@@ -61,7 +61,7 @@ export default async (
     packageManager
   }: MainOpts = {},
   shouldSpin: boolean = false
-) => {
+): Promise<void> => {
   const spinner = new Spinner(shouldSpin)
   // MAIN
   if (dev && prod) {
@@ -73,7 +73,7 @@ export default async (
     )
   }
 
-  if (!packageManager) {
+  if (packageManager === undefined) {
     if (existsSync('./pnpm-lock.yaml')) {
       // lock file for pnpm
       packageManager = 'pnpm'
@@ -124,7 +124,7 @@ export default async (
       )}`
     )
     await installWithTool(typesToFetch.map(t => `@types/${t}`), {
-      dev: !Boolean(prod),
+      dev: !prod,
       packageManager,
       exact
     })
@@ -150,7 +150,7 @@ export default async (
     formatPackageMessage(
       `${
         // need a leading newline if this is our first print statement
-        installed.length ? '' : '\n'
+        installed.length !== 0 ? '' : '\n'
       }The following packages were installed, but ${chalk.yellowBright.bold(
         'lack types'
       )}`,
