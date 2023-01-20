@@ -16,7 +16,7 @@
     "lodash": "^4",
     "ora": "5.1.0",
     "pkg-dir": "5.0.0",
-    "shelljs": "0.8.4",
+    "shelljs": "0.8.5",
     "update-notifier": "5.0.1"
   },
   "devDependencies": {
